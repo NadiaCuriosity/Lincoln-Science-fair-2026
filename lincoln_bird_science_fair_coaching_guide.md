@@ -341,6 +341,10 @@ Useful sources to check:
 
 - DOC backyard bird sanctuary advice: https://www.doc.govt.nz/always-be-naturing/do-your-bit-for-nature/create-a-backyard-bird-sanctuary/
 - DOC common bird identification activity: https://dxcprod.doc.govt.nz/get-involved/conservation-activities/identify-common-birds-in-your-local-nature-space/
-- NZ Birds Online, house sparrow: https://www.nzbirdsonline.org.nz/species/house-sparrow
+- NZ Birds Online, bellbird: https://www.nzbirdsonline.org.nz/species/bellbird
 - NZ Birds Online, silvereye: https://www.nzbirdsonline.org.nz/species/silvereye
+- NZ Birds Online, tui: https://www.nzbirdsonline.org.nz/species/tui
+- NZ Birds Online, house sparrow: https://www.nzbirdsonline.org.nz/species/house-sparrow
+- NZ Birds Online, chaffinch: https://www.nzbirdsonline.org.nz/species/chaffinch
+- NZ Birds Online, European greenfinch: https://www.nzbirdsonline.org.nz/species/european-greenfinch
 - SPCA feeding wild birds advice: https://www.spca.nz/advice-and-welfare/article/feeding-birds-in-the-wild

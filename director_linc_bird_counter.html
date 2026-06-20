@@ -498,14 +498,66 @@
     }
 
     .station-pill,
-    .species-chip {
+    .species-chip,
+    .species-card {
       min-height: 48px;
       padding: 10px 12px;
       text-align: left;
     }
 
+    .species-card {
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper-2);
+      display: grid;
+      gap: 8px;
+    }
+
+    .species-select {
+      border: 0;
+      background: transparent;
+      color: inherit;
+      min-height: 0;
+      padding: 0;
+      text-align: left;
+    }
+
+    .species-select:hover {
+      box-shadow: none;
+      transform: none;
+    }
+
+    .species-chip-content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .species-reference {
+      border: 2px solid var(--line);
+      border-radius: 999px;
+      background: #fffaf0;
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 4px 9px;
+      font-size: 0.75rem;
+      font-weight: 900;
+      text-decoration: none;
+      text-transform: uppercase;
+      width: max-content;
+    }
+
+    .species-reference:hover {
+      background: #e9d9ae;
+    }
+
     .station-pill.active,
-    .species-chip.active {
+    .species-chip.active,
+    .species-card.active {
       background: var(--forest);
       color: var(--paper-2);
       border-color: #102f22;
@@ -597,6 +649,30 @@
 
     .form-field.full {
       grid-column: 1 / -1;
+    }
+
+    .reference-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+      gap: 8px;
+      grid-column: 1 / -1;
+    }
+
+    .reference-link {
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      background: #fffaf0;
+      color: var(--ink);
+      min-height: 40px;
+      padding: 9px 11px;
+      font-weight: 900;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .reference-link:hover {
+      background: #eef4e2;
+      box-shadow: 0 5px 0 rgba(24, 32, 27, 0.16);
     }
 
     label {
@@ -962,15 +1038,19 @@
                 <div class="form-field">
                   <label for="caseSuspect">Likely Bird</label>
                   <select id="caseSuspect">
-                    <option>Waxeye</option>
+                    <option>Silvereye / waxeye</option>
                     <option>Bellbird</option>
                     <option>Chaffinch</option>
-                    <option>Sparrow</option>
+                    <option>House sparrow</option>
                     <option>Tui</option>
                     <option>Greenfinch</option>
                     <option>Other</option>
                     <option>Unknown</option>
                   </select>
+                </div>
+                <div class="form-field full">
+                  <label>Bird Reference Links</label>
+                  <div class="reference-links" id="birdReferenceLinks"></div>
                 </div>
                 <div class="form-field">
                   <label for="caseTail">Tail Or Shape</label>
@@ -1036,16 +1116,20 @@
     const starterFoods = ["Nectar", "Seeds High", "Seeds Low", "Oats", "Fat Pellets", "Fat Cake"];
 
     const starterSpecies = [
-      { name: "Waxeye", type: "native" },
-      { name: "Bellbird", type: "native" },
-      { name: "Tui", type: "native" },
-      { name: "Sparrow", type: "introduced" },
-      { name: "Chaffinch", type: "introduced" },
-      { name: "Greenfinch", type: "introduced" },
+      { name: "Silvereye / waxeye", type: "native", url: "https://www.nzbirdsonline.org.nz/species/silvereye" },
+      { name: "Bellbird", type: "native", url: "https://www.nzbirdsonline.org.nz/species/bellbird" },
+      { name: "Tui", type: "native", url: "https://www.nzbirdsonline.org.nz/species/tui" },
+      { name: "House sparrow", type: "introduced", url: "https://www.nzbirdsonline.org.nz/species/house-sparrow" },
+      { name: "Chaffinch", type: "introduced", url: "https://www.nzbirdsonline.org.nz/species/chaffinch" },
+      { name: "Greenfinch", type: "introduced", url: "https://www.nzbirdsonline.org.nz/species/european-greenfinch" },
       { name: "Unknown small bird", type: "unknown" }
     ];
 
     const retiredDefaultSpecies = ["Blackbird", "Starling"];
+    const speciesAliases = new Map([
+      ["Waxeye", "Silvereye / waxeye"],
+      ["Sparrow", "House sparrow"]
+    ]);
 
     const achievements = [
       { id: "first", name: "First Data Point", test: state => totalVisits(state) >= 1 },
@@ -1139,7 +1223,20 @@
       (currentState.speciesOptions || []).forEach(item => {
         if (!item || !item.name) return;
         if (retiredDefaultSpecies.includes(item.name) && !selectedSpecies.has(item.name)) return;
+        const replacementName = speciesAliases.get(item.name);
+        if (replacementName) {
+          Object.values(currentState.species).forEach(list => {
+            if (!Array.isArray(list)) return;
+            list.forEach((name, index) => {
+              if (name === item.name) list[index] = replacementName;
+            });
+          });
+          return;
+        }
         if (!optionMap.has(item.name)) optionMap.set(item.name, item);
+      });
+      Object.keys(currentState.species).forEach(food => {
+        currentState.species[food] = [...new Set(currentState.species[food])];
       });
       currentState.speciesOptions = [...optionMap.values()];
 
@@ -1168,7 +1265,7 @@
         "copySummary", "summaryText", "exportStatus", "soundToggle",
         "resetAll", "videoInput", "videoPlayer", "videoStage",
         "zoomSlider", "zoomLabel", "fitVideo", "fillVideo", "resetZoom",
-        "fullScreenVideo"
+        "fullScreenVideo", "birdReferenceLinks"
       ].forEach(id => {
         elements[id] = document.getElementById(id);
       });
@@ -1256,6 +1353,7 @@
       renderStations();
       renderSpeciesChips();
       renderSpeciesTable();
+      renderBirdReferenceLinks();
       renderCases();
       renderAchievements();
       renderSummary();
@@ -1324,16 +1422,48 @@
       const selected = state.species[activeSpeciesFood] || [];
       state.speciesOptions.forEach(species => {
         const active = selected.includes(species.name);
+        const card = document.createElement("div");
+        card.className = `species-card${active ? " active" : ""}`;
         const button = document.createElement("button");
         button.type = "button";
-        button.className = `species-chip${active ? " active" : ""}`;
+        button.className = "species-select";
         button.innerHTML = `
-          <strong>${escapeHtml(species.name)}</strong>
-          <span class="tag ${species.type}">${escapeHtml(species.type)}</span>
+          <span class="species-chip-content">
+            <span>
+              <strong>${escapeHtml(species.name)}</strong>
+              <span class="tag ${species.type}">${escapeHtml(species.type)}</span>
+            </span>
+          </span>
         `;
         button.addEventListener("click", () => toggleSpecies(activeSpeciesFood, species.name));
-        elements.speciesChipGrid.appendChild(button);
+        card.appendChild(button);
+        if (species.url) {
+          const link = document.createElement("a");
+          link.className = "species-reference";
+          link.href = species.url;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.textContent = "Reference";
+          link.setAttribute("aria-label", `Open ${species.name} reference`);
+          card.appendChild(link);
+        }
+        elements.speciesChipGrid.appendChild(card);
       });
+    }
+
+    function renderBirdReferenceLinks() {
+      elements.birdReferenceLinks.innerHTML = "";
+      starterSpecies
+        .filter(species => species.url)
+        .forEach(species => {
+          const link = document.createElement("a");
+          link.className = "reference-link";
+          link.href = species.url;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.textContent = species.name;
+          elements.birdReferenceLinks.appendChild(link);
+        });
     }
 
     function renderSpeciesTable() {
