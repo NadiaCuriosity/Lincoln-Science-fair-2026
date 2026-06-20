@@ -1,0 +1,1724 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Linc's Bird Observation Lab</title>
+  <style>
+    :root {
+      --ink: #18201b;
+      --paper: #f4efd9;
+      --paper-2: #fffaf0;
+      --forest: #1f5b43;
+      --moss: #6f8f3d;
+      --sky: #4d8aa8;
+      --oat: #d7ad5b;
+      --poppy: #c7442e;
+      --charcoal: #263238;
+      --line: #2d3a30;
+      --soft: rgba(24, 32, 27, 0.08);
+      --shadow: 0 14px 34px rgba(23, 31, 26, 0.16);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      background:
+        linear-gradient(90deg, rgba(31, 91, 67, 0.08) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(31, 91, 67, 0.06) 1px, transparent 1px),
+        var(--paper);
+      background-size: 34px 34px;
+      color: var(--ink);
+      font-family: "Trebuchet MS", Verdana, sans-serif;
+      letter-spacing: 0;
+    }
+
+    body {
+      min-height: 100%;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+      letter-spacing: 0;
+    }
+
+    button {
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper-2);
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 800;
+      transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 7px 0 rgba(24, 32, 27, 0.18);
+    }
+
+    button:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible {
+      outline: 4px solid rgba(77, 138, 168, 0.45);
+      outline-offset: 2px;
+    }
+
+    .app {
+      width: min(1380px, calc(100% - 28px));
+      margin: 14px auto 40px;
+    }
+
+    .masthead {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: stretch;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(31, 91, 67, 0.12) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(31, 91, 67, 0.10) 1px, transparent 1px),
+        #fffaf0;
+      background-size: 22px 22px;
+      border: 3px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .masthead::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 14px;
+      background:
+        repeating-linear-gradient(0deg, var(--forest) 0 10px, var(--moss) 10px 20px);
+    }
+
+    .title-block {
+      min-width: 0;
+      padding: 30px 26px 22px 34px;
+    }
+
+    .kicker {
+      margin: 0 0 6px;
+      color: var(--forest);
+      font-size: 0.82rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2rem, 4.3vw, 3.9rem);
+      line-height: 0.95;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .top-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-content: center;
+      justify-content: flex-end;
+      padding: 26px;
+      min-width: 240px;
+    }
+
+    .top-actions button {
+      min-height: 44px;
+      padding: 10px 14px;
+    }
+
+    .danger {
+      background: #ffe4dd;
+      border-color: var(--poppy);
+      color: #6d170d;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .tab {
+      min-height: 52px;
+      padding: 10px;
+      background: #e7dcc2;
+      text-align: center;
+    }
+
+    .tab.active {
+      background: var(--forest);
+      color: var(--paper-2);
+      border-color: #102f22;
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    .layout {
+      display: grid;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .layout.two {
+      grid-template-columns: minmax(320px, 0.92fr) minmax(420px, 1.25fr);
+    }
+
+    .layout.observation {
+      grid-template-columns: minmax(0, 1.35fr) minmax(340px, 0.75fr);
+      align-items: start;
+    }
+
+    .layout.export-grid {
+      grid-template-columns: minmax(320px, 0.8fr) minmax(420px, 1.2fr);
+    }
+
+    .panel {
+      background: rgba(255, 250, 240, 0.94);
+      border: 3px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      min-width: 0;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 3px solid var(--line);
+      background: #e9d9ae;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.3rem;
+      line-height: 1.1;
+    }
+
+    .panel-body {
+      padding: 16px;
+      min-width: 0;
+    }
+
+    .video-shell {
+      display: grid;
+      gap: 12px;
+    }
+
+    .file-label {
+      display: grid;
+      gap: 8px;
+      padding: 14px;
+      border: 2px dashed rgba(24, 32, 27, 0.45);
+      border-radius: var(--radius);
+      background: #fff6df;
+      font-weight: 800;
+    }
+
+    .file-label input {
+      min-width: 0;
+      width: 100%;
+    }
+
+    .file-hint {
+      color: rgba(24, 32, 27, 0.68);
+      font-size: 0.86rem;
+      font-weight: 700;
+      text-transform: none;
+    }
+
+    .video-stage {
+      --zoom: 1;
+      --pan-x: 0px;
+      --pan-y: 0px;
+      width: 100%;
+      height: min(76vh, 920px);
+      min-height: 620px;
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        #101914;
+      background-size: 28px 28px;
+      border: 3px solid var(--line);
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .video-stage video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #101914;
+      border: 0;
+      border-radius: 0;
+      display: block;
+      transform: translate(var(--pan-x), var(--pan-y)) scale(var(--zoom));
+      transform-origin: center center;
+      transition: transform 120ms ease;
+    }
+
+    .video-stage.fill video {
+      object-fit: cover;
+    }
+
+    .speed-row,
+    .zoom-row,
+    .pan-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .speed-row button,
+    .zoom-row button,
+    .pan-row button {
+      min-height: 42px;
+    }
+
+    .zoom-panel {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      background: #eef4e2;
+    }
+
+    .zoom-slider {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      font-weight: 900;
+      text-transform: none;
+    }
+
+    .zoom-slider input {
+      padding: 0;
+      accent-color: var(--forest);
+    }
+
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .stat {
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: #eef4e2;
+      min-height: 88px;
+    }
+
+    .stat strong {
+      display: block;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.9rem, 3vw, 2.2rem);
+      line-height: 0.95;
+      overflow-wrap: anywhere;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 8px;
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .food-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
+      gap: 10px;
+    }
+
+    .food-button {
+      min-height: 116px;
+      padding: 12px;
+      text-align: left;
+      background: var(--paper-2);
+      display: grid;
+      align-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .food-button::after {
+      content: "";
+      position: absolute;
+      right: -12px;
+      bottom: -18px;
+      width: 72px;
+      height: 72px;
+      border: 10px solid rgba(31, 91, 67, 0.12);
+      border-radius: 50%;
+    }
+
+    .food-button:nth-child(1) {
+      background: #ffe7d9;
+    }
+
+    .food-button:nth-child(2) {
+      background: #fff0bc;
+    }
+
+    .food-button:nth-child(3) {
+      background: #e9f0d2;
+    }
+
+    .food-button:nth-child(4) {
+      background: #d7edf0;
+    }
+
+    .food-button:nth-child(5) {
+      background: #eadcf3;
+    }
+
+    .food-button:nth-child(6) {
+      background: #f2e0ca;
+    }
+
+    .food-name {
+      position: relative;
+      z-index: 1;
+      font-size: 1.05rem;
+    }
+
+    .food-count {
+      position: relative;
+      z-index: 1;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.5rem, 4.3vw, 3.2rem);
+      line-height: 0.88;
+    }
+
+    .utility-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .utility-row button,
+    .utility-row input,
+    .utility-row select {
+      min-height: 44px;
+      padding: 10px 12px;
+    }
+
+    .utility-row input,
+    .utility-row select {
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      background: #fffaf0;
+      min-width: 180px;
+    }
+
+    .log-list,
+    .case-list,
+    .achievement-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .log-item,
+    .case-item,
+    .achievement {
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      background: #fbf1d7;
+    }
+
+    .log-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .empty {
+      border: 2px dashed rgba(24, 32, 27, 0.35);
+      border-radius: var(--radius);
+      padding: 16px;
+      color: rgba(24, 32, 27, 0.72);
+      background: rgba(255, 250, 240, 0.7);
+      font-weight: 800;
+    }
+
+    .species-workbench {
+      display: grid;
+      grid-template-columns: minmax(220px, 0.55fr) minmax(340px, 1fr);
+      gap: 12px;
+    }
+
+    .station-list,
+    .species-chip-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .station-pill,
+    .species-chip {
+      min-height: 48px;
+      padding: 10px 12px;
+      text-align: left;
+    }
+
+    .station-pill.active,
+    .species-chip.active {
+      background: var(--forest);
+      color: var(--paper-2);
+      border-color: #102f22;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 3px 8px;
+      border: 2px solid var(--line);
+      border-radius: 999px;
+      background: #fffaf0;
+      font-size: 0.76rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .tag.native {
+      background: #d6f0df;
+    }
+
+    .tag.introduced {
+      background: #ffe8c7;
+    }
+
+    .tag.unknown {
+      background: #e6e1eb;
+    }
+
+    .species-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      margin-top: 14px;
+    }
+
+    .species-table th,
+    .species-table td {
+      border-bottom: 2px solid rgba(24, 32, 27, 0.18);
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .species-table th {
+      background: #e9d9ae;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+    }
+
+    .detective-grid {
+      display: grid;
+      grid-template-columns: minmax(300px, 0.8fr) minmax(420px, 1.2fr);
+      gap: 12px;
+    }
+
+    .image-preview {
+      display: grid;
+      place-items: center;
+      min-height: 260px;
+      border: 3px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        repeating-linear-gradient(45deg, rgba(31, 91, 67, 0.08) 0 12px, transparent 12px 24px),
+        #fff6df;
+      overflow: hidden;
+    }
+
+    .image-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .form-field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .form-field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      background: #fffaf0;
+      color: var(--ink);
+      padding: 10px 12px;
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .summary-text {
+      min-height: 460px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .status-line {
+      min-height: 26px;
+      margin-top: 10px;
+      font-weight: 900;
+      color: var(--forest);
+    }
+
+    .achievement-list {
+      grid-template-columns: repeat(5, minmax(130px, 1fr));
+    }
+
+    .achievement {
+      min-height: 68px;
+      background: #e1dfcf;
+      opacity: 0.55;
+    }
+
+    .achievement.active {
+      background: #d6f0df;
+      opacity: 1;
+    }
+
+    .achievement strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .pop {
+      animation: pop 260ms ease;
+    }
+
+    @keyframes pop {
+      0% {
+        transform: scale(1);
+      }
+      45% {
+        transform: scale(1.045);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @media (max-width: 1020px) {
+      .masthead,
+      .layout.two,
+      .layout.observation,
+      .layout.export-grid,
+      .species-workbench,
+      .detective-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .top-actions {
+        justify-content: stretch;
+        padding-top: 0;
+      }
+
+      .top-actions button {
+        flex: 1 1 140px;
+      }
+
+      .food-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .achievement-list,
+      .stats-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 680px) {
+      .app {
+        width: min(100% - 18px, 1380px);
+        margin-top: 9px;
+      }
+
+      .tabs,
+      .food-grid,
+      .speed-row,
+      .zoom-row,
+      .pan-row,
+      .achievement-list,
+      .stats-strip,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .title-block,
+      .panel-body,
+      .panel-head,
+      .top-actions {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .food-button {
+        min-height: 112px;
+      }
+
+      .video-stage {
+        height: 72vh;
+        min-height: 520px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="masthead">
+      <div class="title-block">
+        <p class="kicker">Linc's Science Fair Data Tool</p>
+        <h1>Bird Observation Lab</h1>
+      </div>
+      <div class="top-actions">
+        <button type="button" id="soundToggle">Click Sound Off</button>
+        <button type="button" id="resetAll" class="danger">Reset Data</button>
+      </div>
+    </header>
+
+    <nav class="tabs" aria-label="Session tabs">
+      <button type="button" class="tab active" data-view="countView">Count Visits</button>
+      <button type="button" class="tab" data-view="speciesView">Species List</button>
+      <button type="button" class="tab" data-view="detectiveView">Bird ID Evidence</button>
+      <button type="button" class="tab" data-view="exportView">Results Export</button>
+    </nav>
+
+    <main>
+      <section class="view active" id="countView">
+        <div class="layout observation">
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">Observation Footage</h2>
+            </div>
+            <div class="panel-body video-shell">
+              <label class="file-label">
+                Load Video
+                <span class="file-hint">Choose the video file. It stays on this computer.</span>
+                <input type="file" id="videoInput" accept="video/*">
+              </label>
+              <div class="video-stage" id="videoStage">
+                <video id="videoPlayer" controls></video>
+              </div>
+              <div class="speed-row" aria-label="Playback speed">
+                <button type="button" data-speed="0.5">0.5x</button>
+                <button type="button" data-speed="1">1x</button>
+                <button type="button" data-speed="1.5">1.5x</button>
+                <button type="button" data-speed="2">2x</button>
+              </div>
+              <div class="zoom-panel">
+                <div class="zoom-row" aria-label="Video view controls">
+                  <button type="button" id="fitVideo">Fit</button>
+                  <button type="button" id="fillVideo">Fill</button>
+                  <button type="button" id="resetZoom">Reset</button>
+                  <button type="button" id="fullScreenVideo">Fullscreen</button>
+                </div>
+                <label class="zoom-slider" for="zoomSlider">
+                  <span>Zoom</span>
+                  <input type="range" id="zoomSlider" min="1" max="4" step="0.1" value="1">
+                  <span id="zoomLabel">1.0x</span>
+                </label>
+                <div class="pan-row" aria-label="Video pan controls">
+                  <button type="button" data-pan="left">Left</button>
+                  <button type="button" data-pan="up">Up</button>
+                  <button type="button" data-pan="down">Down</button>
+                  <button type="button" data-pan="right">Right</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">Bird Visit Buttons</h2>
+              <button type="button" id="undoLast">Undo Last</button>
+            </div>
+            <div class="panel-body">
+              <div class="stats-strip">
+                <div class="stat">
+                  <strong id="totalVisits">0</strong>
+                  <span>Total visits</span>
+                </div>
+                <div class="stat">
+                  <strong id="leaderName">None</strong>
+                  <span>Current leader</span>
+                </div>
+                <div class="stat">
+                  <strong id="speciesTotal">0</strong>
+                  <span>Species marks</span>
+                </div>
+              </div>
+
+              <div class="food-grid" id="foodGrid"></div>
+
+              <div class="utility-row">
+                <input type="text" id="newFoodName" placeholder="New food station">
+                <button type="button" id="addFood">Add Station</button>
+              </div>
+
+              <p class="status-line" id="countStatus" aria-live="polite"></p>
+            </div>
+          </section>
+        </div>
+
+        <div class="layout" style="margin-top: 12px;">
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">Visit Log</h2>
+            </div>
+            <div class="panel-body">
+              <ul class="log-list" id="visitLog"></ul>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">Science Milestones</h2>
+            </div>
+            <div class="panel-body">
+              <ul class="achievement-list" id="achievements"></ul>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="speciesView">
+        <section class="panel">
+          <div class="panel-head">
+            <h2 class="panel-title">Species Per Food Location</h2>
+          </div>
+          <div class="panel-body species-workbench">
+            <div>
+              <div class="station-list" id="stationList"></div>
+            </div>
+            <div>
+              <div class="species-chip-grid" id="speciesChipGrid"></div>
+              <div class="utility-row">
+                <input type="text" id="customSpecies" placeholder="Add species or mystery bird">
+                <select id="customSpeciesType">
+                  <option value="unknown">Unknown</option>
+                  <option value="native">Native</option>
+                  <option value="introduced">Introduced</option>
+                </select>
+                <button type="button" id="addSpecies">Add Species</button>
+              </div>
+              <table class="species-table" id="speciesTable">
+                <thead>
+                  <tr>
+                    <th>Food</th>
+                    <th>Species Seen</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="view" id="detectiveView">
+        <div class="detective-grid">
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">Screen Grab</h2>
+            </div>
+            <div class="panel-body video-shell">
+              <label class="file-label">
+                Load Still Image
+                <span class="file-hint">Choose a screen grab for bird detective work.</span>
+                <input type="file" id="imageInput" accept="image/*">
+              </label>
+              <div class="image-preview" id="imagePreview">
+                <span class="empty">No image loaded</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">Bird Detective Sheet</h2>
+              <button type="button" id="saveCase">Save Case</button>
+            </div>
+            <div class="panel-body">
+              <div class="form-grid">
+                <div class="form-field">
+                  <label for="caseName">Case Name</label>
+                  <input type="text" id="caseName" placeholder="Unknown at nectar">
+                </div>
+                <div class="form-field">
+                  <label for="caseConfidence">Confidence</label>
+                  <select id="caseConfidence">
+                    <option>Sure</option>
+                    <option>Maybe</option>
+                    <option>Unknown</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label for="caseSize">Size</label>
+                  <select id="caseSize">
+                    <option>Small</option>
+                    <option>Medium</option>
+                    <option>Large</option>
+                    <option>Unsure</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label for="caseBeak">Beak Shape</label>
+                  <select id="caseBeak">
+                    <option>Short</option>
+                    <option>Thin</option>
+                    <option>Curved</option>
+                    <option>Strong</option>
+                    <option>Unsure</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label for="caseColour">Colours</label>
+                  <input type="text" id="caseColour" placeholder="green-grey, brown, black">
+                </div>
+                <div class="form-field">
+                  <label for="caseBehaviour">Behaviour</label>
+                  <select id="caseBehaviour">
+                    <option>Drinking nectar</option>
+                    <option>Eating seed</option>
+                    <option>Eating oats</option>
+                    <option>Eating pellets</option>
+                    <option>Perching nearby</option>
+                    <option>Unsure</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label for="caseSuspect">Likely Bird</label>
+                  <select id="caseSuspect">
+                    <option>Waxeye</option>
+                    <option>Bellbird</option>
+                    <option>Chaffinch</option>
+                    <option>Sparrow</option>
+                    <option>Tui</option>
+                    <option>Greenfinch</option>
+                    <option>Other</option>
+                    <option>Unknown</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label for="caseTail">Tail Or Shape</label>
+                  <input type="text" id="caseTail" placeholder="long tail, round body">
+                </div>
+                <div class="form-field full">
+                  <label for="caseEvidence">Evidence</label>
+                  <textarea id="caseEvidence" placeholder="What matched the reference photo? What did not match?"></textarea>
+                </div>
+                <div class="form-field full">
+                  <label for="caseConclusion">Conclusion</label>
+                  <textarea id="caseConclusion" placeholder="Most likely a... because..."></textarea>
+                </div>
+              </div>
+              <p class="status-line" id="caseStatus" aria-live="polite"></p>
+            </div>
+          </section>
+        </div>
+
+        <section class="panel" style="margin-top: 12px;">
+          <div class="panel-head">
+            <h2 class="panel-title">Saved Cases</h2>
+          </div>
+          <div class="panel-body">
+            <ul class="case-list" id="caseList"></ul>
+          </div>
+        </section>
+      </section>
+
+      <section class="view" id="exportView">
+        <div class="layout export-grid">
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">Downloads</h2>
+            </div>
+            <div class="panel-body">
+              <div class="utility-row">
+                <button type="button" id="downloadVisitCsv">Download Visits CSV</button>
+                <button type="button" id="downloadSpeciesCsv">Download Species CSV</button>
+                <button type="button" id="downloadJson">Download Backup JSON</button>
+                <button type="button" id="copySummary">Copy Summary</button>
+              </div>
+              <p class="status-line" id="exportStatus" aria-live="polite"></p>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">Science Fair Summary</h2>
+            </div>
+            <div class="panel-body">
+              <textarea class="summary-text" id="summaryText" readonly></textarea>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const storageKey = "directorLincBirdCounter.v1";
+
+    const starterFoods = ["Nectar", "Seeds High", "Seeds Low", "Oats", "Fat Pellets", "Fat Cake"];
+
+    const starterSpecies = [
+      { name: "Waxeye", type: "native" },
+      { name: "Bellbird", type: "native" },
+      { name: "Tui", type: "native" },
+      { name: "Sparrow", type: "introduced" },
+      { name: "Chaffinch", type: "introduced" },
+      { name: "Greenfinch", type: "introduced" },
+      { name: "Unknown small bird", type: "unknown" }
+    ];
+
+    const retiredDefaultSpecies = ["Blackbird", "Starling"];
+
+    const achievements = [
+      { id: "first", name: "First Data Point", test: state => totalVisits(state) >= 1 },
+      { id: "ten", name: "Ten Visits", test: state => totalVisits(state) >= 10 },
+      { id: "allFoods", name: "Every Station", test: state => state.foods.every(food => (state.counts[food] || 0) > 0) },
+      { id: "species", name: "Species Evidence", test: state => speciesMarkCount(state) >= 5 },
+      { id: "case", name: "ID Evidence Saved", test: state => state.cases.length >= 1 }
+    ];
+
+    const elements = {};
+    let activeSpeciesFood = "Nectar";
+    let audioContext = null;
+    let previewUrl = null;
+    let videoUrl = null;
+    let videoView = {
+      zoom: 1,
+      panX: 0,
+      panY: 0,
+      fill: false
+    };
+
+    let state = loadState();
+
+    function freshState() {
+      const counts = {};
+      const species = {};
+      starterFoods.forEach(food => {
+        counts[food] = 0;
+        species[food] = [];
+      });
+
+      return {
+        foods: [...starterFoods],
+        counts,
+        visits: [],
+        species,
+        speciesOptions: [...starterSpecies],
+        cases: [],
+        sound: false
+      };
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(storageKey);
+        if (!raw) return freshState();
+        const parsed = JSON.parse(raw);
+        const base = freshState();
+        const merged = {
+          ...base,
+          ...parsed,
+          foods: Array.isArray(parsed.foods) && parsed.foods.length ? parsed.foods : base.foods,
+          counts: { ...base.counts, ...(parsed.counts || {}) },
+          species: { ...base.species, ...(parsed.species || {}) },
+          speciesOptions: Array.isArray(parsed.speciesOptions) && parsed.speciesOptions.length ? parsed.speciesOptions : base.speciesOptions,
+          visits: Array.isArray(parsed.visits) ? parsed.visits : [],
+          cases: Array.isArray(parsed.cases) ? parsed.cases : []
+        };
+        merged.foods.forEach(food => {
+          if (typeof merged.counts[food] !== "number") merged.counts[food] = 0;
+          if (!Array.isArray(merged.species[food])) merged.species[food] = [];
+        });
+        return migrateState(merged);
+      } catch (error) {
+        return freshState();
+      }
+    }
+
+    function migrateState(currentState) {
+      const oldSeedCount = currentState.counts.Seeds || 0;
+      const oldSeedSpecies = Array.isArray(currentState.species.Seeds) ? currentState.species.Seeds : [];
+      if (currentState.foods.includes("Seeds") && !currentState.foods.includes("Seeds Low")) {
+        currentState.counts["Seeds Low"] = oldSeedCount;
+        currentState.species["Seeds Low"] = oldSeedSpecies;
+      }
+
+      const customFoods = currentState.foods.filter(food => !starterFoods.includes(food) && food !== "Seeds");
+      currentState.foods = [...starterFoods, ...customFoods];
+      currentState.foods.forEach(food => {
+        if (typeof currentState.counts[food] !== "number") currentState.counts[food] = 0;
+        if (!Array.isArray(currentState.species[food])) currentState.species[food] = [];
+      });
+      delete currentState.counts.Seeds;
+      delete currentState.species.Seeds;
+
+      const selectedSpecies = new Set(
+        Object.values(currentState.species).flat().filter(Boolean)
+      );
+      const optionMap = new Map();
+      starterSpecies.forEach(item => optionMap.set(item.name, item));
+      (currentState.speciesOptions || []).forEach(item => {
+        if (!item || !item.name) return;
+        if (retiredDefaultSpecies.includes(item.name) && !selectedSpecies.has(item.name)) return;
+        if (!optionMap.has(item.name)) optionMap.set(item.name, item);
+      });
+      currentState.speciesOptions = [...optionMap.values()];
+
+      return currentState;
+    }
+
+    function saveState() {
+      localStorage.setItem(storageKey, JSON.stringify(state));
+    }
+
+    function totalVisits(currentState = state) {
+      return currentState.foods.reduce((sum, food) => sum + (currentState.counts[food] || 0), 0);
+    }
+
+    function speciesMarkCount(currentState = state) {
+      return currentState.foods.reduce((sum, food) => sum + ((currentState.species[food] || []).length), 0);
+    }
+
+    function init() {
+      [
+        "foodGrid", "visitLog", "totalVisits", "leaderName", "speciesTotal",
+        "newFoodName", "addFood", "undoLast", "countStatus", "stationList",
+        "speciesChipGrid", "customSpecies", "customSpeciesType", "addSpecies",
+        "speciesTable", "imageInput", "imagePreview", "saveCase", "caseStatus",
+        "caseList", "downloadVisitCsv", "downloadSpeciesCsv", "downloadJson",
+        "copySummary", "summaryText", "exportStatus", "soundToggle",
+        "resetAll", "videoInput", "videoPlayer", "videoStage",
+        "zoomSlider", "zoomLabel", "fitVideo", "fillVideo", "resetZoom",
+        "fullScreenVideo"
+      ].forEach(id => {
+        elements[id] = document.getElementById(id);
+      });
+
+      if (!state.foods.includes(activeSpeciesFood)) activeSpeciesFood = state.foods[0];
+      bindEvents();
+      render();
+    }
+
+    function bindEvents() {
+      document.querySelectorAll(".tab").forEach(button => {
+        button.addEventListener("click", () => showView(button.dataset.view));
+      });
+
+      document.querySelectorAll("[data-speed]").forEach(button => {
+        button.addEventListener("click", () => {
+          elements.videoPlayer.playbackRate = Number(button.dataset.speed);
+          setStatus(elements.countStatus, `Playback set to ${button.dataset.speed}x.`);
+        });
+      });
+
+      document.querySelectorAll("[data-pan]").forEach(button => {
+        button.addEventListener("click", () => panVideo(button.dataset.pan));
+      });
+
+      elements.addFood.addEventListener("click", addFoodStation);
+      elements.newFoodName.addEventListener("keydown", event => {
+        if (event.key === "Enter") addFoodStation();
+      });
+      elements.undoLast.addEventListener("click", undoLastVisit);
+      elements.addSpecies.addEventListener("click", addCustomSpecies);
+      elements.customSpecies.addEventListener("keydown", event => {
+        if (event.key === "Enter") addCustomSpecies();
+      });
+      elements.saveCase.addEventListener("click", saveDetectiveCase);
+      elements.downloadVisitCsv.addEventListener("click", downloadVisitCsv);
+      elements.downloadSpeciesCsv.addEventListener("click", downloadSpeciesCsv);
+      elements.downloadJson.addEventListener("click", downloadJson);
+      elements.copySummary.addEventListener("click", copySummary);
+      elements.soundToggle.addEventListener("click", toggleSound);
+      elements.resetAll.addEventListener("click", resetData);
+      elements.zoomSlider.addEventListener("input", () => setVideoZoom(Number(elements.zoomSlider.value)));
+      elements.fitVideo.addEventListener("click", () => setVideoFill(false));
+      elements.fillVideo.addEventListener("click", () => setVideoFill(true));
+      elements.resetZoom.addEventListener("click", resetVideoView);
+      elements.fullScreenVideo.addEventListener("click", openVideoFullscreen);
+
+      elements.videoInput.addEventListener("change", event => {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+        if (videoUrl) URL.revokeObjectURL(videoUrl);
+        videoUrl = URL.createObjectURL(file);
+        elements.videoPlayer.src = videoUrl;
+        resetVideoView();
+        setStatus(elements.countStatus, `Loaded ${file.name}.`);
+      });
+
+      elements.imageInput.addEventListener("change", event => {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
+        previewUrl = URL.createObjectURL(file);
+        elements.imagePreview.innerHTML = "";
+        const image = document.createElement("img");
+        image.alt = "Bird screen grab preview";
+        image.src = previewUrl;
+        elements.imagePreview.appendChild(image);
+      });
+    }
+
+    function showView(viewId) {
+      document.querySelectorAll(".tab").forEach(button => {
+        button.classList.toggle("active", button.dataset.view === viewId);
+      });
+      document.querySelectorAll(".view").forEach(view => {
+        view.classList.toggle("active", view.id === viewId);
+      });
+      if (viewId === "exportView") renderSummary();
+    }
+
+    function render() {
+      renderFoodButtons();
+      renderStats();
+      renderVisitLog();
+      renderStations();
+      renderSpeciesChips();
+      renderSpeciesTable();
+      renderCases();
+      renderAchievements();
+      renderSummary();
+      elements.soundToggle.textContent = state.sound ? "Click Sound On" : "Click Sound Off";
+      applyVideoView();
+    }
+
+    function renderFoodButtons() {
+      elements.foodGrid.innerHTML = "";
+      state.foods.forEach(food => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "food-button";
+        button.dataset.food = food;
+        button.innerHTML = `
+          <span class="food-name">${escapeHtml(food)}</span>
+          <span class="food-count">${state.counts[food] || 0}</span>
+        `;
+        button.addEventListener("click", () => addVisit(food, button));
+        elements.foodGrid.appendChild(button);
+      });
+    }
+
+    function renderStats() {
+      elements.totalVisits.textContent = totalVisits();
+      elements.leaderName.textContent = leadingFood();
+      elements.speciesTotal.textContent = speciesMarkCount();
+    }
+
+    function renderVisitLog() {
+      elements.visitLog.innerHTML = "";
+      const latest = state.visits.slice(-12).reverse();
+      if (!latest.length) {
+        elements.visitLog.innerHTML = `<li class="empty">No visits logged yet.</li>`;
+        return;
+      }
+      latest.forEach(visit => {
+        const item = document.createElement("li");
+        item.className = "log-item";
+        item.innerHTML = `
+          <strong>${escapeHtml(visit.food)}</strong>
+          <span>${escapeHtml(visit.videoTime || "No video time")}</span>
+        `;
+        elements.visitLog.appendChild(item);
+      });
+    }
+
+    function renderStations() {
+      elements.stationList.innerHTML = "";
+      state.foods.forEach(food => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `station-pill${food === activeSpeciesFood ? " active" : ""}`;
+        button.textContent = food;
+        button.addEventListener("click", () => {
+          activeSpeciesFood = food;
+          renderStations();
+          renderSpeciesChips();
+        });
+        elements.stationList.appendChild(button);
+      });
+    }
+
+    function renderSpeciesChips() {
+      elements.speciesChipGrid.innerHTML = "";
+      const selected = state.species[activeSpeciesFood] || [];
+      state.speciesOptions.forEach(species => {
+        const active = selected.includes(species.name);
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `species-chip${active ? " active" : ""}`;
+        button.innerHTML = `
+          <strong>${escapeHtml(species.name)}</strong>
+          <span class="tag ${species.type}">${escapeHtml(species.type)}</span>
+        `;
+        button.addEventListener("click", () => toggleSpecies(activeSpeciesFood, species.name));
+        elements.speciesChipGrid.appendChild(button);
+      });
+    }
+
+    function renderSpeciesTable() {
+      const tbody = elements.speciesTable.querySelector("tbody");
+      tbody.innerHTML = "";
+      state.foods.forEach(food => {
+        const names = state.species[food] || [];
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td><strong>${escapeHtml(food)}</strong></td>
+          <td>${names.length ? names.map(escapeHtml).join(", ") : "None marked"}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function renderCases() {
+      elements.caseList.innerHTML = "";
+      if (!state.cases.length) {
+        elements.caseList.innerHTML = `<li class="empty">No detective cases saved yet.</li>`;
+        return;
+      }
+      state.cases.slice().reverse().forEach(item => {
+        const li = document.createElement("li");
+        li.className = "case-item";
+        li.innerHTML = `
+          <strong>${escapeHtml(item.name)}</strong>
+          <p><span class="tag unknown">${escapeHtml(item.confidence)}</span> ${escapeHtml(item.suspect)}</p>
+          <p><strong>Observation:</strong> ${escapeHtml(item.observation)}</p>
+          <p><strong>Evidence:</strong> ${escapeHtml(item.evidence)}</p>
+          <p><strong>Conclusion:</strong> ${escapeHtml(item.conclusion)}</p>
+        `;
+        elements.caseList.appendChild(li);
+      });
+    }
+
+    function renderAchievements() {
+      elements.achievements.innerHTML = "";
+      achievements.forEach(item => {
+        const active = item.test(state);
+        const li = document.createElement("li");
+        li.className = `achievement${active ? " active" : ""}`;
+        li.innerHTML = `<strong>${escapeHtml(item.name)}</strong><span>${active ? "Unlocked" : "Locked"}</span>`;
+        elements.achievements.appendChild(li);
+      });
+    }
+
+    function renderSummary() {
+      elements.summaryText.value = buildSummary();
+    }
+
+    function addVisit(food, button) {
+      state.counts[food] = (state.counts[food] || 0) + 1;
+      state.visits.push({
+        id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        food,
+        videoTime: formatVideoTime(elements.videoPlayer.currentTime),
+        loggedAt: new Date().toISOString()
+      });
+      saveState();
+      render();
+      setStatus(elements.countStatus, `${food} visit logged.`);
+      tick();
+      if (button) animate(button);
+    }
+
+    function setVideoZoom(value) {
+      videoView.zoom = Math.min(4, Math.max(1, value || 1));
+      if (videoView.zoom === 1) {
+        videoView.panX = 0;
+        videoView.panY = 0;
+      }
+      applyVideoView();
+    }
+
+    function setVideoFill(fill) {
+      videoView.fill = fill;
+      applyVideoView();
+      setStatus(elements.countStatus, fill ? "Video set to fill the viewing area." : "Video set to fit inside the viewing area.");
+    }
+
+    function panVideo(direction) {
+      const step = Math.round(42 * videoView.zoom);
+      if (direction === "left") videoView.panX -= step;
+      if (direction === "right") videoView.panX += step;
+      if (direction === "up") videoView.panY -= step;
+      if (direction === "down") videoView.panY += step;
+      applyVideoView();
+    }
+
+    function resetVideoView() {
+      videoView = {
+        zoom: 1,
+        panX: 0,
+        panY: 0,
+        fill: false
+      };
+      applyVideoView();
+      if (elements.countStatus) setStatus(elements.countStatus, "Video view reset.");
+    }
+
+    function applyVideoView() {
+      if (!elements.videoStage || !elements.videoPlayer) return;
+      elements.videoStage.style.setProperty("--zoom", videoView.zoom);
+      elements.videoStage.style.setProperty("--pan-x", `${videoView.panX}px`);
+      elements.videoStage.style.setProperty("--pan-y", `${videoView.panY}px`);
+      elements.videoStage.classList.toggle("fill", videoView.fill);
+      if (elements.zoomSlider) elements.zoomSlider.value = String(videoView.zoom);
+      if (elements.zoomLabel) elements.zoomLabel.textContent = `${videoView.zoom.toFixed(1)}x`;
+    }
+
+    function openVideoFullscreen() {
+      const target = elements.videoStage;
+      if (!target || !target.requestFullscreen) {
+        setStatus(elements.countStatus, "Fullscreen is not available in this browser.");
+        return;
+      }
+      target.requestFullscreen().catch(() => {
+        setStatus(elements.countStatus, "Fullscreen could not open.");
+      });
+    }
+
+    function undoLastVisit() {
+      const visit = state.visits.pop();
+      if (!visit) {
+        setStatus(elements.countStatus, "No visit to undo.");
+        return;
+      }
+      state.counts[visit.food] = Math.max(0, (state.counts[visit.food] || 0) - 1);
+      saveState();
+      render();
+      setStatus(elements.countStatus, `Removed last ${visit.food} visit.`);
+    }
+
+    function addFoodStation() {
+      const name = elements.newFoodName.value.trim();
+      if (!name) return;
+      if (state.foods.some(food => food.toLowerCase() === name.toLowerCase())) {
+        setStatus(elements.countStatus, `${name} already exists.`);
+        return;
+      }
+      state.foods.push(name);
+      state.counts[name] = 0;
+      state.species[name] = [];
+      activeSpeciesFood = name;
+      elements.newFoodName.value = "";
+      saveState();
+      render();
+      setStatus(elements.countStatus, `${name} station added.`);
+    }
+
+    function toggleSpecies(food, speciesName) {
+      const list = state.species[food] || [];
+      if (list.includes(speciesName)) {
+        state.species[food] = list.filter(name => name !== speciesName);
+      } else {
+        state.species[food] = [...list, speciesName];
+      }
+      saveState();
+      render();
+    }
+
+    function addCustomSpecies() {
+      const name = elements.customSpecies.value.trim();
+      const type = elements.customSpeciesType.value;
+      if (!name) return;
+      const existing = state.speciesOptions.some(item => item.name.toLowerCase() === name.toLowerCase());
+      if (!existing) state.speciesOptions.push({ name, type });
+      if (!state.species[activeSpeciesFood].includes(name)) {
+        state.species[activeSpeciesFood].push(name);
+      }
+      elements.customSpecies.value = "";
+      saveState();
+      render();
+    }
+
+    function saveDetectiveCase() {
+      const name = value("caseName") || `Case ${state.cases.length + 1}`;
+      const observationParts = [
+        `Size: ${value("caseSize")}`,
+        `Colours: ${value("caseColour") || "unsure"}`,
+        `Beak: ${value("caseBeak")}`,
+        `Tail/shape: ${value("caseTail") || "unsure"}`,
+        `Behaviour: ${value("caseBehaviour")}`
+      ];
+
+      const item = {
+        id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        name,
+        confidence: value("caseConfidence"),
+        suspect: value("caseSuspect"),
+        observation: observationParts.join("; "),
+        evidence: value("caseEvidence") || "No evidence written yet.",
+        conclusion: value("caseConclusion") || "No conclusion written yet.",
+        savedAt: new Date().toISOString()
+      };
+
+      state.cases.push(item);
+      saveState();
+      render();
+      setStatus(elements.caseStatus, `${name} saved.`);
+      clearCaseForm();
+    }
+
+    function clearCaseForm() {
+      ["caseName", "caseColour", "caseTail", "caseEvidence", "caseConclusion"].forEach(id => {
+        document.getElementById(id).value = "";
+      });
+    }
+
+    function leadingFood() {
+      if (!totalVisits()) return "None";
+      return state.foods
+        .map(food => ({ food, count: state.counts[food] || 0 }))
+        .sort((a, b) => b.count - a.count)[0].food;
+    }
+
+    function buildSummary() {
+      const lines = [];
+      lines.push("Linc's Bird Observation Lab Summary");
+      lines.push("");
+      lines.push("Question");
+      lines.push("Which bird food station attracted the most bird visits in our backyard?");
+      lines.push("");
+      lines.push("Counting Method");
+      lines.push("I counted bird visits because I could not reliably identify individual birds returning to the feeder.");
+      lines.push("");
+      lines.push("Visit Totals");
+      state.foods.forEach(food => {
+        lines.push(`${food}: ${state.counts[food] || 0}`);
+      });
+      lines.push("");
+      lines.push(`Total visits: ${totalVisits()}`);
+      lines.push(`Most visited station: ${leadingFood()}`);
+      lines.push("");
+      lines.push("Species Seen Per Food Location");
+      state.foods.forEach(food => {
+        const names = state.species[food] || [];
+        lines.push(`${food}: ${names.length ? names.join(", ") : "None marked"}`);
+      });
+      lines.push("");
+      lines.push("Bird Detective Cases");
+      if (!state.cases.length) {
+        lines.push("No cases saved yet.");
+      } else {
+        state.cases.forEach(item => {
+          lines.push(`${item.name}: ${item.suspect} (${item.confidence})`);
+          lines.push(`Observation: ${item.observation}`);
+          lines.push(`Evidence: ${item.evidence}`);
+          lines.push(`Conclusion: ${item.conclusion}`);
+          lines.push("");
+        });
+      }
+      return lines.join("\n");
+    }
+
+    function visitRows() {
+      const rows = [["Food", "Video Time", "Logged At"]];
+      state.visits.forEach(visit => rows.push([visit.food, visit.videoTime || "", visit.loggedAt || ""]));
+      return rows;
+    }
+
+    function speciesRows() {
+      const rows = [["Food", "Species", "Type"]];
+      state.foods.forEach(food => {
+        const names = state.species[food] || [];
+        if (!names.length) rows.push([food, "", ""]);
+        names.forEach(name => {
+          const item = state.speciesOptions.find(species => species.name === name);
+          rows.push([food, name, item ? item.type : "unknown"]);
+        });
+      });
+      return rows;
+    }
+
+    function downloadVisitCsv() {
+      downloadFile("linc-bird-visits.csv", toCsv(visitRows()), "text/csv");
+      setStatus(elements.exportStatus, "Visits CSV downloaded.");
+    }
+
+    function downloadSpeciesCsv() {
+      downloadFile("linc-bird-species.csv", toCsv(speciesRows()), "text/csv");
+      setStatus(elements.exportStatus, "Species CSV downloaded.");
+    }
+
+    function downloadJson() {
+      downloadFile("linc-bird-counter-backup.json", JSON.stringify(state, null, 2), "application/json");
+      setStatus(elements.exportStatus, "Backup JSON downloaded.");
+    }
+
+    async function copySummary() {
+      const text = buildSummary();
+      elements.summaryText.value = text;
+      try {
+        await navigator.clipboard.writeText(text);
+        setStatus(elements.exportStatus, "Summary copied.");
+      } catch (error) {
+        elements.summaryText.focus();
+        elements.summaryText.select();
+        setStatus(elements.exportStatus, "Summary selected for copying.");
+      }
+    }
+
+    function resetData() {
+      const ok = window.confirm("Reset all bird observation data?");
+      if (!ok) return;
+      state = freshState();
+      activeSpeciesFood = state.foods[0];
+      saveState();
+      render();
+      setStatus(elements.countStatus, "Data reset.");
+    }
+
+    function toggleSound() {
+      state.sound = !state.sound;
+      saveState();
+      render();
+    }
+
+    function tick() {
+      if (!state.sound) return;
+      try {
+        if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        oscillator.type = "square";
+        oscillator.frequency.value = 660;
+        gain.gain.setValueAtTime(0.08, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.08);
+        oscillator.connect(gain);
+        gain.connect(audioContext.destination);
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + 0.08);
+      } catch (error) {
+        state.sound = false;
+      }
+    }
+
+    function animate(element) {
+      element.classList.remove("pop");
+      window.requestAnimationFrame(() => element.classList.add("pop"));
+    }
+
+    function formatVideoTime(seconds) {
+      if (!Number.isFinite(seconds) || seconds <= 0) return "";
+      const rounded = Math.floor(seconds);
+      const minutes = Math.floor(rounded / 60);
+      const remaining = String(rounded % 60).padStart(2, "0");
+      return `${minutes}:${remaining}`;
+    }
+
+    function setStatus(element, text) {
+      element.textContent = text;
+    }
+
+    function value(id) {
+      return document.getElementById(id).value.trim();
+    }
+
+    function toCsv(rows) {
+      return rows.map(row => row.map(cell => `"${String(cell).replaceAll('"', '""')}"`).join(",")).join("\n");
+    }
+
+    function downloadFile(filename, content, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    init();
+  </script>
+</body>
+</html>
