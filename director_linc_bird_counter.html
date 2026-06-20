@@ -71,6 +71,30 @@
       box-shadow: none;
     }
 
+    .upload-button {
+      display: inline-grid;
+      place-items: center;
+      min-height: 34px;
+      padding: 7px 10px;
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper-2);
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 800;
+      text-align: center;
+      transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+    }
+
+    .upload-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 7px 0 rgba(24, 32, 27, 0.18);
+    }
+
+    .upload-button input {
+      display: none;
+    }
+
     button:focus-visible,
     input:focus-visible,
     select:focus-visible,
@@ -1078,6 +1102,10 @@
           <section class="panel">
             <div class="panel-head">
               <h2 class="panel-title">Screen Grab</h2>
+              <label class="upload-button">
+                Upload Screen Grab
+                <input type="file" id="imageInput" accept="image/*">
+              </label>
             </div>
             <div class="panel-body video-shell">
               <div class="image-preview" id="imagePreview">
@@ -1368,7 +1396,7 @@
         "foodGrid", "visitLog", "totalVisits", "leaderName", "speciesTotal",
         "newFoodName", "addFood", "undoLast", "countStatus", "stationList",
         "speciesChipGrid", "customSpecies", "customSpeciesType", "addSpecies",
-        "speciesTable", "imagePreview", "saveCase", "caseStatus",
+        "speciesTable", "imageInput", "imagePreview", "saveCase", "caseStatus",
         "caseList", "copyQuantityTable", "copyVarietyTable", "downloadSheetsCsv",
         "summaryText", "exportStatus", "soundToggle",
         "resetAll", "videoInput", "videoPlayer", "videoStage",
@@ -1420,6 +1448,14 @@
       elements.backVideo.addEventListener("click", () => skipVideo(-5));
       elements.forwardVideo.addEventListener("click", () => skipVideo(5));
       elements.grabStill.addEventListener("click", grabStillFromVideo);
+      elements.imageInput.addEventListener("change", event => {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
+        previewUrl = URL.createObjectURL(file);
+        showImagePreview(previewUrl);
+        setStatus(elements.caseStatus, "Screen grab uploaded.");
+      });
       elements.videoScrubber.addEventListener("input", scrubVideo);
       elements.videoPlayer.addEventListener("loadedmetadata", updateVideoTime);
       elements.videoPlayer.addEventListener("timeupdate", updateVideoTime);
