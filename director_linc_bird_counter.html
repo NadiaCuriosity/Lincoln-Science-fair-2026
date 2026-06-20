@@ -1664,8 +1664,9 @@
       });
     }
 
-    function renderSummary() {
+    function renderSummary(resetScroll = false) {
       elements.summaryText.value = buildSummary();
+      if (resetScroll) elements.summaryText.scrollTop = 0;
     }
 
     function addVisit(food, button) {
@@ -2038,11 +2039,33 @@
     function resetData() {
       const ok = window.confirm("Reset all bird observation data?");
       if (!ok) return;
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        previewUrl = null;
+      }
+      if (videoUrl) {
+        URL.revokeObjectURL(videoUrl);
+        videoUrl = null;
+      }
       state = freshState();
       activeSpeciesFood = state.foods[0];
+      videoView = {
+        zoom: 1,
+        panX: 0,
+        panY: 0,
+        fill: false
+      };
       saveState();
+      elements.videoPlayer.removeAttribute("src");
+      elements.videoPlayer.load();
+      elements.videoInput.value = "";
+      elements.imageInput.value = "";
+      clearCaseForm();
       render();
+      renderSummary(true);
+      elements.imagePreview.innerHTML = `<span class="empty">No image loaded</span>`;
       setStatus(elements.countStatus, "Data reset.");
+      setStatus(elements.exportStatus, "Data reset.");
     }
 
     function toggleSound() {
