@@ -6,13 +6,29 @@ The goal is to help Lincoln think like a scientist without doing the project for
 
 Your job is to ask good questions, help him set fair rules, and help with practical tasks like video setup, counting, and Canva formatting. Lincoln should make the decisions, write the answers in his own words, and choose what goes on the final project.
 
+## Parent Calibration
+
+This does **not** need to be a perfect experiment.
+
+Lincoln is 11. The win is that he can explain:
+
+> I made a prediction, collected data carefully, noticed a limitation, and explained it honestly.
+
+Do not rebuild the setup unless Lincoln wants to. Keep his original curiosity at the centre:
+
+> What bird food attracts the most birds?
+
+The adult job is to help him count consistently and name the limitation simply.
+
 ## Project Question
 
 Recommended wording:
 
-**Which bird food station attracted the most bird visits in our backyard?**
+**What bird food attracts the most birds?**
 
-This is more honest than saying it tests only food type, because the foods need different setups. Nectar needs to hang because it is liquid, while oats and grain are naturally lower feeding foods. Native birds may prefer higher or hanging stations, while sparrows and other introduced birds may be more comfortable feeding lower to the ground. If seeds are offered both high and low, treat them as two different stations: **Seeds High** and **Seeds Low**.
+Use the existing setup. Some foods were in different positions, such as nectar hanging up and seeds high or low. That is okay for a backyard science fair project. Lincoln can explain it as a limitation:
+
+> Some foods were in different places, so height and location might have affected which birds visited.
 
 ## Order To Do The Project
 
@@ -20,52 +36,59 @@ This is more honest than saying it tests only food type, because the foods need 
 
 Ask Lincoln:
 
-- Are we testing just the food, or the whole food station?
-- Why does nectar need a different setup from oats or seed?
-- If seeds are high and low, are those the same test or two different stations?
-- What would make this experiment fair enough for a backyard science project?
+- What bird food do you think will attract the most birds?
+- Why do you think that food will win?
+- What will we count so the test is fair enough?
+- What might make the test not perfect?
 
 Lincoln-friendly wording:
 
-> I am testing which food station gets the most bird visits in my backyard.
+> I am testing which bird food gets the most bird visits in my backyard.
 
 ### 2. Make A Prediction
 
 Ask Lincoln:
 
-- Which station do you think will get the most visits?
+- Which food do you think will get the most visits?
 - Why do you think that?
 - Do you think native birds and sparrows will choose different foods?
 - What bird do you most expect to see?
 
 Sentence starter:
 
-> I think the ______ station will attract the most birds because ______.
+> I think ______ will attract the most birds because ______.
 
-### 3. Design The Stations
+### 3. Keep The Setup Simple
 
 Ask Lincoln:
 
 - What foods are we testing?
-- Where does each food need to go?
-- Which foods should be high or hanging?
-- Which foods should be lower?
-- Is every food getting the same chance to be noticed?
+- Where is each food?
+- Which foods are high?
+- Which foods are low?
+- Which food is nectar?
 
-Important fairness point:
+Minimum-change rule:
 
-Use **one station per food type or clearly name each different station**. If seed is offered high and low, count it as **Seeds High** and **Seeds Low**, not one combined seed total. That lets Lincoln explain whether birds reacted to food, height, or both.
+Do **not** rebuild the setup. Count the food locations that already exist.
+
+If seed is offered high and low, count them separately first:
+
+- Seeds High
+- Seeds Low
+
+Then, if Lincoln wants to answer "which food won?", he can add those two seed numbers together for a **seed total**. Keep the separate numbers as backup evidence.
 
 Possible station list:
 
-| Food Station | Position | Why |
+| Food | Position | Notes |
 |---|---|---|
-| Nectar | Hanging/high | It is liquid and nectar birds feed this way |
-| Seeds High | High/feeder | Tests whether seed attracts birds higher up |
-| Seeds Low | Low/table | Tests whether seed attracts birds lower down |
-| Oats | Low/table | Grain-eating birds often feed lower |
-| Fat Pellets | Feeder/high | This matches how pellets are usually offered |
-| Fat Cake | Feeder/high | This matches how fat cake is usually offered |
+| Nectar | Hanging/high | Nectar is liquid, so it has to hang |
+| Seeds High | High/feeder | Count separately first |
+| Seeds Low | Low/table | Count separately first |
+| Oats | Low/table | Grain food |
+| Fat Pellets | Feeder/high | Fat food |
+| Fat Cake | Feeder/high | Fat food |
 
 ### 4. Set The Fair-Test Rules
 
@@ -85,16 +108,16 @@ Keep the same:
 - People stay away during recording
 - Same camera position if possible
 
-Can not fully keep the same:
+Cannot fully keep the same:
 
 - Food height
 - Container type
 - How easy each food is to eat
 - Which bird species naturally prefer which position
 
-Good evaluation wording:
+Good evaluation wording for an 11-year-old:
 
-> Some foods had to be placed differently. Nectar had to hang because it was liquid, and some birds prefer feeding higher up. This means my experiment compared food stations in a real backyard. Next time I could rotate the solid foods between positions.
+> Some foods were in different places, so height and location might have affected my results. I still counted each bird visit the same way.
 
 ### 5. Define The Counting Rule
 
@@ -102,15 +125,15 @@ Count **bird visits**, not individual birds. It is too hard to know whether the 
 
 A visit counts when:
 
-- One bird lands on a station
-- One bird eats or drinks from a station
+- One bird lands at a food location
+- One bird eats or drinks from a food location
 - Two birds arrive together, count two visits
 
 Do not count:
 
 - Birds flying past
-- Birds sitting nearby without using the station
-- The same bird staying at one station for a long time as multiple visits
+- Birds sitting nearby without using the food
+- The same bird staying at one food location for a long time as multiple visits
 
 If a bird leaves and comes back later, count a new visit.
 
@@ -118,15 +141,15 @@ If a bird leaves and comes back later, count a new visit.
 
 Best method:
 
-1. Watch the video once for one station only.
+1. Watch the video once for one food location only.
 2. Use 5-minute blocks.
 3. Pause or rewind only when needed.
 4. Mark unknown birds as "unknown".
-5. Repeat for the next station.
+5. Repeat for the next food location.
 
 Tally table:
 
-| Food Station | Position | Total Bird Visits | Native Visits | Sparrow/Introduced Visits | Unknown | Notes |
+| Food | Position | Total Bird Visits | Native Visits | Sparrow/Introduced Visits | Unknown | Notes |
 |---|---|---:|---:|---:|---:|---|
 | Nectar | Hanging/high |  |  |  |  |  |
 | Seeds High | High/feeder |  |  |  |  |  |
@@ -134,6 +157,16 @@ Tally table:
 | Oats | Low/table |  |  |  |  |  |
 | Fat Pellets | Feeder/high |  |  |  |  |  |
 | Fat Cake | Feeder/high |  |  |  |  |  |
+
+Optional food total:
+
+| Food | Total Bird Visits |
+|---|---:|
+| Nectar |  |
+| Seeds total (Seeds High + Seeds Low) |  |
+| Oats |  |
+| Fat Pellets |  |
+| Fat Cake |  |
 
 ### 7. Try Bird Identification
 
@@ -165,35 +198,37 @@ Closer videos will help. A still image from the video can go into Canva with arr
 
 Main graph:
 
-**Total bird visits per food station**
+**Total bird visits per bird food**
 
 This should be a bar graph.
 
-Optional extra graph:
+If Lincoln wants one simple graph, use the optional food total table and combine Seeds High + Seeds Low.
 
-**Bird type by station**
+Optional extra graph for detail:
 
-This could be a stacked bar graph showing native, introduced, and unknown visits for each station.
+**Bird type by food location**
+
+This could be a stacked bar graph showing native, introduced, and unknown visits for each food location.
 
 Ask Lincoln:
 
-- Which station had the tallest bar?
+- Which food had the tallest bar?
 - Was the difference big or small?
 - Did any food get no visits?
-- Did bird type change by station?
+- Did bird type change by food location?
 
 ### 9. Write The Conclusion
 
 Ask Lincoln:
 
-- Which station had the most bird visits?
+- Which food had the most bird visits?
 - Was your hypothesis supported?
 - What evidence proves that?
 - What surprised you?
 
 Sentence starter:
 
-> The results showed that the ______ station attracted the most bird visits. My hypothesis was ______ because ______.
+> The results showed that ______ attracted the most bird visits. My hypothesis was ______ because ______.
 
 ### 10. Write The Discussion And Evaluation
 
@@ -207,7 +242,7 @@ Ask Lincoln:
 
 Strong evaluation idea:
 
-> Next time I would test the foods over more days and rotate the solid foods between positions. I would also use a closer camera so I could identify the birds more accurately.
+> My test was not perfect because the food was in different positions. Next time I could test the food over more days or use a closer camera so I could identify the birds more accurately.
 
 ## Canva Page Checklist
 
@@ -224,7 +259,7 @@ Strong evaluation idea:
 
 Independent variable:
 
-> Food station type
+> Bird food
 
 Dependent variable:
 
@@ -232,7 +267,7 @@ Dependent variable:
 
 ### Aim
 
-> The aim of this investigation is to find out which bird food station attracts the most bird visits in our backyard.
+> The aim of this investigation is to find out which bird food attracts the most bird visits in our backyard.
 
 ### Research
 
@@ -247,7 +282,7 @@ Lincoln can research:
 
 Independent variable:
 
-> Food station type
+> Bird food
 
 Dependent variable:
 
@@ -265,7 +300,7 @@ Lincoln writes his own prediction.
 
 Possible idea:
 
-> The results could help people choose bird food and feeding stations that attract the birds they want to support in their garden.
+> The results could help people choose bird food that attracts the birds they want to support in their garden.
 
 ### Equipment
 
