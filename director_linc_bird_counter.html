@@ -220,6 +220,14 @@
       align-items: start;
     }
 
+    .workspace.export-mode {
+      grid-template-columns: 1fr;
+    }
+
+    .workspace.export-mode .observation-panel {
+      display: none;
+    }
+
     .workspace-content {
       min-width: 0;
     }
@@ -237,10 +245,6 @@
     .layout.observation {
       grid-template-columns: minmax(0, 1.35fr) minmax(340px, 0.75fr);
       align-items: start;
-    }
-
-    .layout.export-grid {
-      grid-template-columns: minmax(320px, 0.8fr) minmax(420px, 1.2fr);
     }
 
     .panel {
@@ -766,43 +770,6 @@
       line-height: 1.45;
     }
 
-    .results-preview {
-      display: grid;
-      gap: 14px;
-      margin-top: 14px;
-    }
-
-    .results-preview > div {
-      overflow-x: auto;
-    }
-
-    .results-table {
-      width: 100%;
-      border-collapse: collapse;
-      border: 2px solid var(--line);
-      background: #fffaf0;
-    }
-
-    .results-table caption {
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 1.1rem;
-      font-weight: 900;
-      padding: 8px 0;
-      text-align: left;
-    }
-
-    .results-table th,
-    .results-table td {
-      border: 1px solid rgba(24, 32, 27, 0.32);
-      padding: 8px;
-      text-align: left;
-      vertical-align: top;
-    }
-
-    .results-table th {
-      background: #e9d9ae;
-    }
-
     .status-line {
       min-height: 26px;
       margin-top: 10px;
@@ -869,7 +836,6 @@
       .workspace,
       .layout.two,
       .layout.observation,
-      .layout.export-grid,
       .species-workbench,
       .detective-grid {
         grid-template-columns: 1fr;
@@ -974,7 +940,7 @@
       <button type="button" class="tab" data-view="exportView">Results Export</button>
     </nav>
 
-    <div class="workspace">
+    <div class="workspace" id="workspace">
       <section class="panel observation-panel">
         <div class="panel-head">
           <h2 class="panel-title">Observation Footage</h2>
@@ -1114,11 +1080,6 @@
               <h2 class="panel-title">Screen Grab</h2>
             </div>
             <div class="panel-body video-shell">
-              <label class="file-label">
-                Load Still Image
-                <span class="file-hint">Choose a screen grab for bird detective work.</span>
-                <input type="file" id="imageInput" accept="image/*">
-              </label>
               <div class="image-preview" id="imagePreview">
                 <span class="empty">No image loaded</span>
               </div>
@@ -1181,8 +1142,8 @@
                 <div class="form-field">
                   <label for="caseSuspect">Likely Bird</label>
                   <select id="caseSuspect">
-                    <option>Silvereye / waxeye</option>
-                    <option>Bellbird</option>
+                    <option>Tauhou | Silver Eye</option>
+                    <option>Korimako | Bellbird</option>
                     <option>Chaffinch</option>
                     <option>House sparrow</option>
                     <option>Tui</option>
@@ -1224,31 +1185,18 @@
       </section>
 
       <section class="view" id="exportView">
-        <div class="layout export-grid">
-          <section class="panel">
-            <div class="panel-head">
-              <h2 class="panel-title">Downloads</h2>
-            </div>
-            <div class="panel-body">
-              <div class="utility-row">
-                <button type="button" id="downloadVisitCsv">Download Quantity CSV</button>
-                <button type="button" id="downloadSpeciesCsv">Download Variety CSV</button>
-                <button type="button" id="downloadJson">Download Backup JSON</button>
-                <button type="button" id="copySummary">Copy Summary</button>
-              </div>
-              <p class="status-line" id="exportStatus" aria-live="polite"></p>
-              <div class="results-preview">
-                <div id="quantityPreview"></div>
-                <div id="varietyPreview"></div>
-              </div>
-            </div>
-          </section>
-
+        <div class="layout">
           <section class="panel">
             <div class="panel-head">
               <h2 class="panel-title">Science Fair Summary</h2>
             </div>
             <div class="panel-body">
+              <div class="utility-row">
+                <button type="button" id="copyQuantityTable">Copy Quantity Table</button>
+                <button type="button" id="copyVarietyTable">Copy Variety Table</button>
+                <button type="button" id="downloadSheetsCsv">Download CSV for Google Sheets</button>
+              </div>
+              <p class="status-line" id="exportStatus" aria-live="polite"></p>
               <textarea class="summary-text" id="summaryText" readonly></textarea>
             </div>
           </section>
@@ -1264,8 +1212,8 @@
     const starterFoods = ["Nectar", "Seeds High", "Seeds Low", "Oats", "Fat Pellets", "Fat Cake"];
 
     const starterSpecies = [
-      { name: "Silvereye / waxeye", type: "native", url: "https://www.nzbirdsonline.org.nz/species/silvereye" },
-      { name: "Bellbird", type: "native", url: "https://www.nzbirdsonline.org.nz/species/bellbird" },
+      { name: "Tauhou | Silver Eye", type: "native", url: "https://www.nzbirdsonline.org.nz/species/silvereye" },
+      { name: "Korimako | Bellbird", type: "native", url: "https://www.nzbirdsonline.org.nz/species/bellbird" },
       { name: "Tui", type: "native", url: "https://www.nzbirdsonline.org.nz/species/tui" },
       { name: "House sparrow", type: "introduced", url: "https://www.nzbirdsonline.org.nz/species/house-sparrow" },
       { name: "Chaffinch", type: "introduced", url: "https://www.nzbirdsonline.org.nz/species/chaffinch" },
@@ -1275,7 +1223,9 @@
 
     const retiredDefaultSpecies = ["Blackbird", "Starling"];
     const speciesAliases = new Map([
-      ["Waxeye", "Silvereye / waxeye"],
+      ["Silvereye / waxeye", "Tauhou | Silver Eye"],
+      ["Waxeye", "Tauhou | Silver Eye"],
+      ["Bellbird", "Korimako | Bellbird"],
       ["Sparrow", "House sparrow"]
     ]);
 
@@ -1414,18 +1364,18 @@
 
     function init() {
       [
+        "workspace",
         "foodGrid", "visitLog", "totalVisits", "leaderName", "speciesTotal",
         "newFoodName", "addFood", "undoLast", "countStatus", "stationList",
         "speciesChipGrid", "customSpecies", "customSpeciesType", "addSpecies",
-        "speciesTable", "imageInput", "imagePreview", "saveCase", "caseStatus",
-        "caseList", "downloadVisitCsv", "downloadSpeciesCsv", "downloadJson",
-        "copySummary", "summaryText", "exportStatus", "soundToggle",
+        "speciesTable", "imagePreview", "saveCase", "caseStatus",
+        "caseList", "copyQuantityTable", "copyVarietyTable", "downloadSheetsCsv",
+        "summaryText", "exportStatus", "soundToggle",
         "resetAll", "videoInput", "videoPlayer", "videoStage",
         "zoomSlider", "zoomLabel", "fitVideo", "fillVideo", "resetZoom",
         "fullScreenVideo", "birdReferenceLinks", "observationDay", "observationDate",
         "weatherInput", "playVideo", "pauseVideo", "backVideo", "forwardVideo",
-        "grabStill", "videoScrubber", "currentTimeLabel", "durationLabel",
-        "quantityPreview", "varietyPreview"
+        "grabStill", "videoScrubber", "currentTimeLabel", "durationLabel"
       ].forEach(id => {
         elements[id] = document.getElementById(id);
       });
@@ -1457,10 +1407,9 @@
         if (event.key === "Enter") addCustomSpecies();
       });
       elements.saveCase.addEventListener("click", saveDetectiveCase);
-      elements.downloadVisitCsv.addEventListener("click", downloadVisitCsv);
-      elements.downloadSpeciesCsv.addEventListener("click", downloadSpeciesCsv);
-      elements.downloadJson.addEventListener("click", downloadJson);
-      elements.copySummary.addEventListener("click", copySummary);
+      elements.copyQuantityTable.addEventListener("click", () => copyRowsForSheets("Quantity", quantityRows()));
+      elements.copyVarietyTable.addEventListener("click", () => copyRowsForSheets("Variety", varietyRows()));
+      elements.downloadSheetsCsv.addEventListener("click", downloadSheetsCsv);
       elements.soundToggle.addEventListener("click", toggleSound);
       elements.resetAll.addEventListener("click", resetData);
       elements.observationDay.addEventListener("input", updateObservationMeta);
@@ -1493,18 +1442,10 @@
         state.videoName = file.name;
         saveState();
         renderSummary();
-        renderResultsPreview();
         resetVideoView();
         setStatus(elements.countStatus, `Loaded ${file.name}.`);
       });
 
-      elements.imageInput.addEventListener("change", event => {
-        const file = event.target.files && event.target.files[0];
-        if (!file) return;
-        if (previewUrl) URL.revokeObjectURL(previewUrl);
-        previewUrl = URL.createObjectURL(file);
-        showImagePreview(previewUrl);
-      });
     }
 
     function showView(viewId) {
@@ -1514,8 +1455,8 @@
       document.querySelectorAll(".view").forEach(view => {
         view.classList.toggle("active", view.id === viewId);
       });
+      elements.workspace.classList.toggle("export-mode", viewId === "exportView");
       if (viewId === "exportView") renderSummary();
-      if (viewId === "exportView") renderResultsPreview();
     }
 
     function render() {
@@ -1529,7 +1470,6 @@
       renderCases();
       renderAchievements();
       renderSummary();
-      renderResultsPreview();
       elements.soundToggle.textContent = state.sound ? "Click Sound On" : "Click Sound Off";
       elements.observationDay.value = state.observationDay || "";
       elements.observationDate.value = state.observationDate || "";
@@ -1713,7 +1653,6 @@
       state.weather = elements.weatherInput.value.trim();
       saveState();
       renderSummary();
-      renderResultsPreview();
     }
 
     function setVideoZoom(value) {
@@ -2008,8 +1947,8 @@
     function varietySpeciesColumns() {
       return [
         { header: "Tui", matches: ["Tui"] },
-        { header: "Korimako", matches: ["Bellbird"] },
-        { header: "Tauhou", matches: ["Silvereye / waxeye", "Waxeye"] },
+        { header: "Korimako", matches: ["Korimako | Bellbird", "Bellbird"] },
+        { header: "Tauhou", matches: ["Tauhou | Silver Eye", "Silvereye / waxeye", "Waxeye"] },
         { header: "House sparrow", matches: ["House sparrow", "Sparrow"] },
         { header: "Chaffinch", matches: ["Chaffinch"] },
         { header: "Greenfinch", matches: ["Greenfinch"] }
@@ -2030,12 +1969,6 @@
       return rows;
     }
 
-    function renderResultsPreview() {
-      if (!elements.quantityPreview || !elements.varietyPreview) return;
-      elements.quantityPreview.innerHTML = tableHtml("Quantity", quantityRows());
-      elements.varietyPreview.innerHTML = tableHtml("Variety", varietyRows());
-    }
-
     function formatDisplayDate(value) {
       if (!value) return "";
       const parts = value.split("-");
@@ -2043,43 +1976,27 @@
       return `${parts[2]}/${parts[1]}/${parts[0]}`;
     }
 
-    function tableHtml(caption, rows) {
-      return `
-        <table class="results-table">
-          <caption>${escapeHtml(caption)}</caption>
-          <tbody>
-            ${rows.map(row => `<tr>${row.map(cell => `<td>${escapeHtml(cell)}</td>`).join("")}</tr>`).join("")}
-          </tbody>
-        </table>
-      `;
-    }
-
-    function downloadVisitCsv() {
-      downloadFile("linc-bird-quantity.csv", toCsv(quantityRows()), "text/csv");
-      setStatus(elements.exportStatus, "Quantity CSV downloaded.");
-    }
-
-    function downloadSpeciesCsv() {
-      downloadFile("linc-bird-variety.csv", toCsv(varietyRows()), "text/csv");
-      setStatus(elements.exportStatus, "Variety CSV downloaded.");
-    }
-
-    function downloadJson() {
-      downloadFile("linc-bird-counter-backup.json", JSON.stringify(state, null, 2), "application/json");
-      setStatus(elements.exportStatus, "Backup JSON downloaded.");
-    }
-
-    async function copySummary() {
-      const text = buildSummary();
-      elements.summaryText.value = text;
+    async function copyRowsForSheets(name, rows) {
+      const text = toTsv(rows);
       try {
         await navigator.clipboard.writeText(text);
-        setStatus(elements.exportStatus, "Summary copied.");
+        setStatus(elements.exportStatus, `${name} table copied. Paste it into Google Sheets.`);
       } catch (error) {
-        elements.summaryText.focus();
-        elements.summaryText.select();
-        setStatus(elements.exportStatus, "Summary selected for copying.");
+        copyWithFallback(text);
+        setStatus(elements.exportStatus, `${name} table selected for copying.`);
       }
+    }
+
+    function downloadSheetsCsv() {
+      const rows = [
+        ["Quantity"],
+        ...quantityRows(),
+        [""],
+        ["Variety"],
+        ...varietyRows()
+      ];
+      downloadFile("linc-bird-google-sheets.csv", toCsv(rows), "text/csv");
+      setStatus(elements.exportStatus, "Google Sheets CSV downloaded.");
     }
 
     function resetData() {
@@ -2140,6 +2057,22 @@
 
     function toCsv(rows) {
       return rows.map(row => row.map(cell => `"${String(cell).replaceAll('"', '""')}"`).join(",")).join("\n");
+    }
+
+    function toTsv(rows) {
+      return rows.map(row => row.map(cell => String(cell).replaceAll("\t", " ")).join("\t")).join("\n");
+    }
+
+    function copyWithFallback(text) {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.left = "-9999px";
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      textarea.remove();
     }
 
     function downloadFile(filename, content, type) {
